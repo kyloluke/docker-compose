@@ -1,0 +1,9 @@
+#
+# ** THIS IS AN AUTO-GENERATED FILE **
+#
+
+# Default Kibana configuration for docker target
+server.host: "0.0.0.0"
+server.shutdownTimeout: "5s"
+elasticsearch.hosts: [ "http://172.20.0.7:9200" ] # 仅仅修改了此项，es的ip地址
+monitoring.ui.container.elasticsearch.enabled: true

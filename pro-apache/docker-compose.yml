@@ -1,0 +1,84 @@
+version: '3'
+
+networks:
+    extnetwork:
+        ipam:
+            config:
+                - subnet: 172.30.0.0/24               
+services:
+
+    # php:
+    #     build:
+    #         context: ./php
+    #     volumes:
+    #         # 「:」前半はパソコンロカールプロジェクトのパスです、後半はdocker容器プロジェクトパスです
+    #         - E:\apache-pro\apache:/var/www
+    #     container_name: php_74
+    #     networks:
+    #         extnetwork:
+    #             ipv4_address: 172.30.0.1
+
+    apache-php74:
+        build:
+            context: ./apache-php74
+        volumes:
+            # 「:」の前半はロカールプロジェクトのパスです、後半はdocker容器プロジェクトパスです
+            # 例:   E:\apache-pro\wacor 
+            #       E:\apache-pro ディレクトリーはプロジェクト専用です
+            - E:\apache-pro:/var/www/html
+        ports:
+            - "8080:80"
+        container_name: apache-php74
+        networks:
+            extnetwork:
+                ipv4_address: 172.30.0.2
+
+    # postgres:
+    #     build: 
+    #         context: ./pgsql
+    #     environment:
+    #         POSTGRES_PASSWORD: postgres
+    #         POSTGRES_USER: postgres
+    #         POSTGRES_DB: kamome
+
+    #     volumes:
+    #         - pgdata:/var/lib/postgresql/pgdata
+    #     ports:
+    #         - "5434:5432"
+    #     container_name: postgres_12
+    #     networks:
+    #         extnetwork:
+    #             ipv4_address: 172.20.0.12
+
+    mysql8:
+        image: mysql:8
+        command: --default-authentication-plugin=mysql_native_password
+        ports:
+            - "3308:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: "root"
+            MYSQL_USER: "wacor"
+            MYSQL_PASSWORD: "wacor"
+            MYSQL_DATABASE: "wacor"
+        volumes:
+            - mysql8data:/var/lib/mysql
+
+        container_name: mysql_8
+        networks:
+            extnetwork:
+                ipv4_address: 172.30.0.3
+    # redis:
+    #     image: redis
+    #     ports: 
+    #         - "6378:6379"
+    #     container_name: redis_newest    
+    #     networks:
+    #         extnetwork:
+    #             ipv4_address: 172.20.0.6
+
+volumes:
+    # pgdata:
+    #     driver: local
+
+    mysql8data:
+        driver: local

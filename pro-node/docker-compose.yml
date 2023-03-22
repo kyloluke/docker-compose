@@ -1,0 +1,60 @@
+version: '3'
+
+networks:
+    extnetwork:
+        ipam:
+            config:
+                - subnet: 172.20.10.0/24
+services:
+
+    node_18:
+        # container_name: server-test # 容器名称
+        image: node:18
+        ports:  # 暴露的端口
+            - "3000:3000"
+            - "8000:8000"
+        environment: 
+            - NODE_ENV=development
+        volumes:
+            - E:\projects\node\test:/usr/src/app
+        working_dir: /usr/src/app
+        # depends_on: # web服务依靠mysql要先等mysql启动
+        #     - mongo_44rc
+        restart: on-failure:5 # 自动重启，失败的话重启5次后停止
+        # command: npm start # 覆盖容器启动后默认执行的命令
+        command: node server.js # 覆盖容器启动后默认执行的命令
+
+        networks:
+            extnetwork:
+                ipv4_address: 172.20.10.2
+ 
+    mongo:
+        # container_name: mongo-test # 容器名称
+
+        image: mongo:4.4-rc
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: root
+    #     image: mongo:4.4-rc
+    #     restart: unless-stopped
+    #     container_name: mongodb
+    #     command: --replSet rs0 --bind_ip_all --keyFile /data/mongodb/keyFile
+    #     environment:
+    #         TZ: 'Asia/Shanghai'
+    #         #用户名密码
+    #         MONGO_INITDB_ROOT_USERNAME: 'admin'
+    #         MONGO_INITDB_ROOT_PASSWORD: 'password'
+        ports:
+            - 27017:27017
+        volumes:
+            - E:\projects\node\mongo\db:/data/db
+        command: --serviceExecutor adaptive
+        networks:
+            extnetwork:
+                ipv4_address: 172.20.10.3
+# volumes:    # 每次重建 数据不会丢失
+    # pgdata:
+    #     driver: local  # 可以不写 默认就是本地固定的目录
+    # mysqldata:
+    #     driver: local
