@@ -13,3 +13,5 @@ COPY ./conf.d/kamome-86.conf /etc/nginx/conf.d/kamome-86.conf
 COPY ./conf.d/kamome-asia.conf /etc/nginx/conf.d/kamome-asia.conf
 COPY ./conf.d/wordpress.conf /etc/nginx/conf.d/wordpress.conf
 COPY ./conf.d/swk.conf /etc/nginx/conf.d/swk.conf
+COPY ./conf.d/laravel-test.conf /etc/nginx/conf.d/laravel-test.conf
+COPY ./conf.d/laravel-shop.conf /etc/nginx/conf.d/laravel-shop.conf

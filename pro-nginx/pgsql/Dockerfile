@@ -11,6 +11,6 @@ RUN apt-get update && \
 # RUN mv /var/lib/postgresql/data/pg_hba.conf /var/lib/postgresql/data/pg_hba.conf.back
 # COPY ./pgsql/pg_hba.conf /var/lib/postgresql/data/
 
-COPY ./ext/kamome_bk20210315.sql.tar.gz /home
+# COPY ./ext/kamome_bk20210315.sql.tar.gz /home
 #COPY ./kamome20200327.sql /home
 

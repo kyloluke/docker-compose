@@ -15,17 +15,10 @@ services:
             # 「:」的前半部分是本机存放项目的目录，后半部分是docker容器中的项目目录
             - E:\projects:/var/www
         container_name: php_73
-        image: php73-kamome # 既有 build 又有 image的时候，image参数意为自定义镜像的名称
+        image: php73 # 既有 build 又有 image的时候，image参数意为自定义镜像的名称
         networks:
             extnetwork:
                 ipv4_address: 172.20.0.2
-    queue: # 此service依赖于 php73-kamome镜像
-        image: php73-kamome
-        volumes:
-            - E:\projects:/var/www
-        depends_on:
-            - php
-        command: php artisan queue:work
     nginx:
         build:
             context: ./nginx
@@ -38,22 +31,22 @@ services:
             extnetwork:
                 ipv4_address: 172.20.0.3
 
-    # postgres:
-    #     build: 
-    #         context: ./pgsql
-    #     environment:
-    #         POSTGRES_PASSWORD: postgres
-    #         POSTGRES_USER: postgres
-    #         POSTGRES_DB: kamome
+    postgres:
+        build: 
+            context: ./pgsql
+        environment:
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_DB: kamome
 
-    #     volumes:
-    #         - pgdata:/var/lib/postgresql/pgdata
-    #     ports:
-    #         - "5434:5432"
-    #     container_name: postgres_12
-    #     networks:
-    #         extnetwork:
-    #             ipv4_address: 172.20.0.4
+        volumes:
+            - pgdata:/var/lib/postgresql/pgdata
+        ports:
+            - "5434:5432"
+        container_name: postgres_12
+        networks:
+            extnetwork:
+                ipv4_address: 172.20.0.4
 
     mysql:
         image: mysql:5.7
@@ -63,9 +56,9 @@ services:
             - "3307:3306"
         environment:
             MYSQL_ROOT_PASSWORD: "root"
-            MYSQL_USER: "zouk"
-            MYSQL_PASSWORD: "zouk"
-            MYSQL_DATABASE: "zouk"
+            MYSQL_USER: "kamome"
+            MYSQL_PASSWORD: "kamome"
+            MYSQL_DATABASE: "kamome"
         volumes:
             - mysqldata:/var/lib/mysql # 通过 docker volume ls 可以查看此本地磁盘目录
 
@@ -77,7 +70,7 @@ services:
         image: redis
         ports: 
             - "6378:6379"
-        container_name: redis_newest    
+        container_name: redis_newest
         networks:
             extnetwork:
                 ipv4_address: 172.20.0.6
@@ -95,19 +88,34 @@ services:
     #         extnetwork:
     #             ipv4_address: 172.20.0.7
     #     ports:
-    #         - 9200:9200 
+    #         - 9200:9200
     #         - 9300:9300
+    #     environment:
+    #         - discovery.seed_hosts=172.20.0.7:9300   # 如果不配置此项，会报错 the default discovery settings are unsuitable for production use; at least one of [discovery.seed_hosts, discovery.seed_providers, cluster.initial_master_nodes] must be configured
+    #     volumes:
+    #         # - certs:/usr/share/elasticsearch/config/certs
+    #         - esdata:/usr/share/elasticsearch/data
     # kibana:
-    #     image: kibana:7.17.5
-    #     container_name: kibana_7175
+    #     # image: kibana:7.17.0
+    #     build: 
+    #         context: ./kibana
+    #     container_name: kibana_7170
+
     #     networks:
     #         extnetwork:
     #             ipv4_address: 172.20.0.8
     #     ports:
     #         - 5601:5601
-volumes:    # 每次重建 数据不会丢失
-    # pgdata:
-    #     driver: local  # 可以不写 默认就是本地固定的目录
 
-    mysqldata:
-        driver: local
+    #     volumes:
+    #         # - certs:/usr/share/kibana/config/certs
+    #         - kibanadata:/usr/share/kibana/data
+
+
+    volumes:    # 每次重建 数据不会丢失
+        pgdata:
+            driver: local  # 可以不写 默认就是本地固定的目录
+        mysqldata:
+            driver: local
+ 
+

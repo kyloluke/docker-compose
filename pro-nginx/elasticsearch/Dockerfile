@@ -1,11 +1,11 @@
 FROM elasticsearch:7.17.0
 
-RUN sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
-    sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
+# RUN sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+#     sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
 
 # 更新软件源
-# RUN apt-get update && \
-#     apt-get install -y vim wget gpg
+RUN apt-get update && \
+    apt-get install -y vim wget gpg
 
 # 安装kibana 从apt软件源安装
 # 参考 https://www.elastic.co/guide/en/kibana/7.17/deb.html#deb-repo
