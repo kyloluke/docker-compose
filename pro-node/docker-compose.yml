@@ -9,23 +9,20 @@ services:
 
     node_18:
         container_name: node_18 # 容器名称
-        image: node:18
+        build: 
+            context: ./node
         ports:  # 暴露的端口
             - "3000:3000"
             - "8000:8000"
-            - "4200:4200"  # angular cli 默认启动端口
+            - "4200:4200" # angular使用
         environment: 
             - NODE_ENV=development
         volumes:
-            - E:\projects\node\test:/usr/src/app                  # **node.js 专用
+            - E:\projects\node\test:/usr/src/app/node                       #**node.js 专用
             - E:\projects\angular:/usr/src/app/angular
-        working_dir: /usr/src/app                                 # ** node.js专用
-        # working_dir: /usr/src/angular
-        # depends_on: # web服务依靠mysql要先等mysql启动
-
+        working_dir: /usr/src/app/node                                      #**node.js专用
         restart: on-failure:5 # 自动重启，失败的话重启5次后停止
-        # command: npm start # 覆盖容器启动后默认执行的命令
-        command: node server.js # 覆盖容器启动后默认执行的命令
+        command: node server.js # 覆盖容器启动后默认执行的命令                  #**node.js专用
 
         networks:
             extnetwork:
@@ -34,9 +31,8 @@ services:
     mongo:
         image: mongo:4.4-rc
         restart: always
-        # restart: unless-stopped
         environment:
-            # TZ: 'Asia/Tokyo'
+            TZ: 'Asia/Tokyo'
             MONGO_INITDB_ROOT_USERNAME: root
             MONGO_INITDB_ROOT_PASSWORD: root
         container_name: mongodb_44rc
@@ -49,7 +45,7 @@ services:
         networks:
             extnetwork:
                 ipv4_address: 172.20.10.3
-# volumes:    # 每次重建 数据不会丢失
+# volumes:
     # pgdata:
     #     driver: local  # 可以不写 默认就是本地固定的目录
     # mysqldata:
